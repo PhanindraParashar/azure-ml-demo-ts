@@ -9,6 +9,11 @@ environment  = "prod"
 enable_acr               = false
 enable_aml_compute_cluster = false
 
+# Synapse workspace (serverless/pay-as-you-go)
+enable_synapse_workspace = true
+synapse_sql_admin_login    = "sqladmin"
+synapse_sql_admin_password = "CHANGE_THIS_PASSWORD"
+
 # If you enable compute later, start with a small CPU SKU
 aml_compute_vm_size  = "Standard_DS1_v2"
 aml_compute_max_nodes = 1

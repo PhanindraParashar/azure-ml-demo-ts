@@ -65,3 +65,22 @@ variable "storage_containers" {
   default     = ["data", "models", "artifacts", "tmp"]
 }
 
+# Synapse workspace configuration
+variable "enable_synapse_workspace" {
+  description = "Create Azure Synapse Analytics workspace with serverless SQL pool (pay-as-you-go)."
+  type        = bool
+  default     = true
+}
+
+variable "synapse_sql_admin_login" {
+  description = "SQL admin login for Synapse workspace."
+  type        = string
+  sensitive   = true
+}
+
+variable "synapse_sql_admin_password" {
+  description = "SQL admin password for Synapse workspace."
+  type        = string
+  sensitive   = true
+}
+

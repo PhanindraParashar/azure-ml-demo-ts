@@ -40,6 +40,9 @@ locals {
 
   # ACR name rules are stricter (alphanumeric, 5-50, no hyphens)
   acr_name = lower(replace("dazmlacr${random_string.suffix.result}", "-", ""))
+
+  # Data Lake Gen2 storage account for Synapse (requires hierarchical namespace)
+  synapse_storage_account_name = substr("dazmldl${random_string.suffix.result}", 0, 24)
 }
 
 # Resource Group
@@ -182,5 +185,75 @@ resource "azurerm_machine_learning_compute_cluster" "cpu_small" {
   }
 
   tags = var.tags
+}
+
+#############################
+# AZURE SYNAPSE WORKSPACE
+#############################
+# Creates a serverless (pay-as-you-go) Synapse workspace
+# No dedicated pools are created by default - uses serverless SQL pool
+
+# Data Lake Gen2 Storage Account for Synapse (requires hierarchical namespace)
+resource "azurerm_storage_account" "synapse_datalake" {
+  count                    = var.enable_synapse_workspace ? 1 : 0
+  name                     = local.synapse_storage_account_name
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  account_kind             = "StorageV2"
+
+  # Enable hierarchical namespace for Data Lake Gen2
+  is_hns_enabled = true
+
+  # Security settings
+  allow_nested_items_to_be_public = false
+  min_tls_version                 = "TLS1_2"
+  public_network_access_enabled   = true
+
+  tags = var.tags
+}
+
+# Data Lake Gen2 Filesystem for Synapse workspace
+resource "azurerm_storage_data_lake_gen2_filesystem" "synapse_fs" {
+  count              = var.enable_synapse_workspace ? 1 : 0
+  name               = "synapse"
+  storage_account_id = azurerm_storage_account.synapse_datalake[0].id
+}
+
+# Synapse Workspace
+resource "azurerm_synapse_workspace" "synapse" {
+  count                = var.enable_synapse_workspace ? 1 : 0
+  name                 = "${local.name_prefix}-synapse"
+  resource_group_name  = azurerm_resource_group.rg.name
+  location             = azurerm_resource_group.rg.location
+
+  # Storage account for Synapse workspace data (Data Lake Gen2)
+  storage_data_lake_gen2_filesystem_id = azurerm_storage_data_lake_gen2_filesystem.synapse_fs[0].id
+
+  # SQL admin credentials
+  sql_administrator_login         = var.synapse_sql_admin_login
+  sql_administrator_login_password = var.synapse_sql_admin_password
+
+  # Managed identity for Synapse
+  identity {
+    type = "SystemAssigned"
+  }
+
+  # Public network access (can be disabled later for security)
+  public_network_access_enabled = true
+
+  # No dedicated SQL pools - using serverless (default)
+  # The serverless SQL pool is automatically available and pay-as-you-go
+
+  tags = var.tags
+}
+
+# Grant Synapse workspace managed identity access to Data Lake Gen2 storage
+resource "azurerm_role_assignment" "synapse_storage" {
+  count                = var.enable_synapse_workspace ? 1 : 0
+  scope                = azurerm_storage_account.synapse_datalake[0].id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_synapse_workspace.synapse[0].identity[0].principal_id
 }
 

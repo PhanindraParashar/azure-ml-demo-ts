@@ -35,3 +35,18 @@ output "acr_name" {
   description = "Null unless enable_acr = true"
 }
 
+output "synapse_workspace_name" {
+  value       = var.enable_synapse_workspace ? azurerm_synapse_workspace.synapse[0].name : null
+  description = "Synapse workspace name"
+}
+
+output "synapse_workspace_id" {
+  value       = var.enable_synapse_workspace ? azurerm_synapse_workspace.synapse[0].id : null
+  description = "Synapse workspace ID"
+}
+
+output "synapse_storage_account_name" {
+  value       = var.enable_synapse_workspace ? azurerm_storage_account.synapse_datalake[0].name : null
+  description = "Data Lake Gen2 storage account name for Synapse"
+}
+
