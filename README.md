@@ -1,6 +1,20 @@
 # azure-ml-demo-ts
 End-to-end demand forecasting project on Azure using Azure ML and Terraform. Covers data prep, feature engineering, training, batch forecasting, model registry, and MLOps best practices.
 
+## Run Scripts
+
+Generate environment variables from Terraform outputs:
+
+```bash
+./scripts/generate_env.sh
+```
+
+This creates `.env` with values extracted from Terraform (includes random resource names).
+
+**Manual updates required:**
+- `SYNAPSE_SQL_ADMIN_LOGIN` — set manually (not in Terraform outputs)
+- `SYNAPSE_SQL_ADMIN_PASSWORD` — set manually (never store in Terraform outputs)
+
 
 ## Creating Datastores and Data Assets
 
