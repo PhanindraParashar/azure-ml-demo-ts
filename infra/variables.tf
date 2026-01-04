@@ -1,3 +1,4 @@
+# Core variables
 variable "subscription_id" {
   description = "Azure subscription ID (DO NOT commit real value to git)."
   type        = string
@@ -16,7 +17,7 @@ variable "project_name" {
 }
 
 variable "environment" {
-  description = "Environment name for tagging/naming (single-env friendly)."
+  description = "Environment name for tagging/naming (e.g., dev, staging, prod)."
   type        = string
   default     = "prod"
 }
@@ -32,25 +33,21 @@ variable "tags" {
   }
 }
 
-# Optional toggles (keep defaults cost-safe)
-variable "enable_acr" {
-  description = "Create Azure Container Registry (useful for custom images)."
-  type        = bool
-  default     = false
-}
-
+# AML (Azure Machine Learning) variables
 variable "enable_aml_compute_cluster" {
-  description = "Create AML compute cluster (min_nodes=0). Keep false by default."
+  description = "Create AML compute cluster (min_nodes=0). Default is true."
   type        = bool
-  default     = false
+  default     = true
 }
 
 # AML compute SKU - must be supported by AML + region.
-# Start with DS1_v2 (small CPU) and change if your workspace doesn't support it.
+# Note: VM quota is enforced by family (e.g., DSv2 family includes both Standard_DS1_v2 and Standard_D1_v2).
+# B-series may be supported depending on region/workspace policies.
+# Common options: Standard_F2s_v2 (FSv2), Standard_E2s_v3 (Ev3), Standard_B2s (BS), Standard_D2as_v5 (Dasv5), Standard_A2_v2 (Av2).
 variable "aml_compute_vm_size" {
-  description = "VM size for AML compute cluster."
+  description = "VM size for AML compute cluster. Must be from a VM family with available quota (D/DS, E, F, B, A series are commonly supported)."
   type        = string
-  default     = "Standard_DS1_v2"
+  default     = "Standard_F2s_v2"
 }
 
 variable "aml_compute_max_nodes" {
@@ -59,6 +56,19 @@ variable "aml_compute_max_nodes" {
   default     = 1
 }
 
+variable "aml_compute_min_nodes" {
+  description = "Min nodes for AML compute cluster."
+  type        = number
+  default     = 0
+}
+
+variable "aml_compute_idle_time_before_scale_down" {
+  description = "Idle time before scale down for AML compute cluster (ISO 8601 duration format, e.g., PT3M)."
+  type        = string
+  default     = "PT3M"
+}
+
+# Storage variables
 variable "storage_containers" {
   description = "Blob containers for project."
   type        = list(string)
@@ -96,3 +106,9 @@ variable "synapse_allow_azure_services" {
   default     = true
 }
 
+# Optional toggles
+variable "enable_acr" {
+  description = "Create Azure Container Registry (useful for custom images). Disabled by default (enable_acr=false)."
+  type        = bool
+  default     = false
+}

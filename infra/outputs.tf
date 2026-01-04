@@ -30,6 +30,29 @@ output "aml_workspace_name" {
   value = azurerm_machine_learning_workspace.aml.name
 }
 
+output "aml_compute_cluster_name" {
+  value       = var.enable_aml_compute_cluster ? azurerm_machine_learning_compute_cluster.cpu_small[0].name : null
+  description = "AML compute cluster name (null if disabled)"
+}
+
+output "aml_compute_cluster_id" {
+  value       = var.enable_aml_compute_cluster ? azurerm_machine_learning_compute_cluster.cpu_small[0].id : null
+  description = "AML compute cluster resource ID (null if disabled)"
+}
+
+output "aml_compute_cluster_details" {
+  value = var.enable_aml_compute_cluster ? {
+    name                                 = azurerm_machine_learning_compute_cluster.cpu_small[0].name
+    id                                   = azurerm_machine_learning_compute_cluster.cpu_small[0].id
+    vm_size                              = azurerm_machine_learning_compute_cluster.cpu_small[0].vm_size
+    vm_priority                          = azurerm_machine_learning_compute_cluster.cpu_small[0].vm_priority
+    min_node_count                       = azurerm_machine_learning_compute_cluster.cpu_small[0].scale_settings[0].min_node_count
+    max_node_count                       = azurerm_machine_learning_compute_cluster.cpu_small[0].scale_settings[0].max_node_count
+    scale_down_nodes_after_idle_duration = azurerm_machine_learning_compute_cluster.cpu_small[0].scale_settings[0].scale_down_nodes_after_idle_duration
+  } : null
+  description = "Complete AML compute cluster configuration details (null if disabled)"
+}
+
 output "acr_name" {
   value       = var.enable_acr ? azurerm_container_registry.acr[0].name : null
   description = "Null unless enable_acr = true"

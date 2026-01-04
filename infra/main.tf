@@ -124,7 +124,7 @@ resource "azurerm_key_vault" "kv" {
   tags = var.tags
 }
 
-# Optional: Azure Container Registry (disabled by default)
+# Optional: Azure Container Registry (disabled by default - enable_acr=false)
 resource "azurerm_container_registry" "acr" {
   count               = var.enable_acr ? 1 : 0
   name                = local.acr_name
@@ -163,7 +163,7 @@ resource "azurerm_machine_learning_workspace" "aml" {
 # OPTIONAL AML COMPUTE CLUSTER
 #############################
 # This is a safe way: min_nodes=0 => no cost when idle.
-# Keep it off by default (enable_aml_compute_cluster=false).
+# Default is enabled (enable_aml_compute_cluster=true), but can be disabled.
 
 resource "azurerm_machine_learning_compute_cluster" "cpu_small" {
   count                         = var.enable_aml_compute_cluster ? 1 : 0
@@ -175,9 +175,9 @@ resource "azurerm_machine_learning_compute_cluster" "cpu_small" {
   vm_priority = "Dedicated"
 
   scale_settings {
-    min_node_count                       = 0
+    min_node_count                       = var.aml_compute_min_nodes
     max_node_count                       = var.aml_compute_max_nodes
-    scale_down_nodes_after_idle_duration = "PT5M"
+    scale_down_nodes_after_idle_duration = var.aml_compute_idle_time_before_scale_down
   }
 
   identity {
