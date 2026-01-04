@@ -1,0 +1,5 @@
+"$schema": https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: train_test_csv
+type: uri_file
+path: azureml://datastores/synapse_adls/paths/data/train_test.csv
+description: Train+test dataset used for EDA and ML modeling (do not use holdout for training)

@@ -1,0 +1,6 @@
+"$schema": https://azuremlschemas.azureedge.net/latest/azureDataLakeGen2.schema.json
+name: synapse_adls
+type: azure_data_lake_gen2
+account_name: dazmldl8f2ko6
+filesystem: synapse
+description: Primary ADLS Gen2 filesystem used by Synapse + AML for EDA and modeling data

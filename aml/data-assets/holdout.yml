@@ -1,0 +1,5 @@
+"$schema": https://azuremlschemas.azureedge.net/latest/data.schema.json
+name: holdout_csv
+type: uri_file
+path: azureml://datastores/synapse_adls/paths/data/holdout.csv
+description: Isolated holdout dataset (keep untouched until final evaluation)
