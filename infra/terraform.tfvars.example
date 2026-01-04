@@ -1,5 +1,5 @@
 # DO NOT COMMIT your real tfvars.
-subscription_id = "b8dc7b3e-dac0-47d0-b09d-f7f85ad6af9c"
+subscription_id = "SUBSCRIPTION_ID"
 location        = "germanywestcentral"
 
 project_name = "demo-azure-ml"
