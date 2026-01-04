@@ -50,3 +50,19 @@ output "synapse_storage_account_name" {
   description = "Data Lake Gen2 storage account name for Synapse"
 }
 
+# --- Additions for .env generation ---
+
+output "subscription_id" {
+  value       = var.subscription_id
+  description = "Azure subscription ID used by this deployment"
+}
+
+output "synapse_datalake_account_name" {
+  value       = var.enable_synapse_workspace ? azurerm_storage_account.synapse_datalake[0].name : ""
+  description = "ADLS Gen2 account name backing Synapse (empty if Synapse disabled)"
+}
+
+output "synapse_filesystem" {
+  value       = var.enable_synapse_workspace ? azurerm_storage_data_lake_gen2_filesystem.synapse_fs[0].name : ""
+  description = "ADLS Gen2 filesystem (container) name for Synapse (empty if disabled)"
+}
