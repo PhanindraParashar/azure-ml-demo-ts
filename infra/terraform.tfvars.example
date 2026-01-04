@@ -1,0 +1,22 @@
+# DO NOT COMMIT your real tfvars.
+subscription_id = "b8dc7b3e-dac0-47d0-b09d-f7f85ad6af9c"
+location        = "germanywestcentral"
+
+project_name = "demo-azure-ml"
+environment  = "prod"
+
+# keep cost-safe defaults
+enable_acr               = false
+enable_aml_compute_cluster = false
+
+# If you enable compute later, start with a small CPU SKU
+aml_compute_vm_size  = "Standard_DS1_v2"
+aml_compute_max_nodes = 1
+
+tags = {
+  owner   = "phani"
+  project = "demo-azure-ml"
+  env     = "prod"
+  iac     = "terraform"
+}
+

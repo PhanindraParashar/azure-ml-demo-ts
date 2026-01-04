@@ -1,0 +1,15 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.crash.log
+*.tfplan
+
+# Local overrides / secrets
+terraform.tfvars
+*.auto.tfvars
+
+# Editor/OS
+.DS_Store
+.vscode/
+
