@@ -84,3 +84,15 @@ variable "synapse_sql_admin_password" {
   sensitive   = true
 }
 
+variable "synapse_allowed_ips" {
+  type        = list(string)
+  description = "Public client IPs allowed to access Synapse (Studio + Serverless SQL)."
+  default     = []
+}
+
+variable "synapse_allow_azure_services" {
+  type        = bool
+  description = "Allow Azure services/resources to access Synapse via firewall special rule (0.0.0.0)."
+  default     = true
+}
+

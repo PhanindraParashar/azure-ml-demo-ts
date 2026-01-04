@@ -249,6 +249,25 @@ resource "azurerm_synapse_workspace" "synapse" {
   tags = var.tags
 }
 
+# Allow specific client IPs (your laptop/public IP)
+resource "azurerm_synapse_firewall_rule" "client_ips" {
+  for_each             = var.enable_synapse_workspace ? toset(var.synapse_allowed_ips) : toset([])
+  name                 = "allow-${replace(each.value, ".", "-")}"
+  synapse_workspace_id = azurerm_synapse_workspace.synapse[0].id
+  start_ip_address     = each.value
+  end_ip_address       = each.value
+}
+
+# Allow Azure services/resources (special Azure firewall rule)
+# Note: The name must be exactly "AllowAllWindowsAzureIps" for the 0.0.0.0 → 0.0.0.0 rule
+resource "azurerm_synapse_firewall_rule" "azure_services" {
+  count                = var.enable_synapse_workspace && var.synapse_allow_azure_services ? 1 : 0
+  name                 = "AllowAllWindowsAzureIps"
+  synapse_workspace_id = azurerm_synapse_workspace.synapse[0].id
+  start_ip_address     = "0.0.0.0"
+  end_ip_address       = "0.0.0.0"
+}
+
 # Grant Synapse workspace managed identity access to Data Lake Gen2 storage
 resource "azurerm_role_assignment" "synapse_storage" {
   count                = var.enable_synapse_workspace ? 1 : 0
