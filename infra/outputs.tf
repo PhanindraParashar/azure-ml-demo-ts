@@ -31,13 +31,33 @@ output "aml_workspace_name" {
 }
 
 output "aml_compute_cluster_name" {
-  value       = var.enable_aml_compute_cluster ? azurerm_machine_learning_compute_cluster.cpu_small[0].name : null
-  description = "AML compute cluster name (null if disabled)"
+  value       = var.enable_aml_compute_cluster ? azurerm_machine_learning_compute_cluster.cpu_small[0].name : ""
+  description = "AML compute cluster name (empty if disabled)"
 }
 
 output "aml_compute_cluster_id" {
   value       = var.enable_aml_compute_cluster ? azurerm_machine_learning_compute_cluster.cpu_small[0].id : null
   description = "AML compute cluster resource ID (null if disabled)"
+}
+
+output "aml_compute_cluster_vm_size" {
+  value       = var.enable_aml_compute_cluster ? azurerm_machine_learning_compute_cluster.cpu_small[0].vm_size : ""
+  description = "AML compute cluster VM size (empty if disabled)"
+}
+
+output "aml_compute_cluster_min_nodes" {
+  value       = var.enable_aml_compute_cluster ? azurerm_machine_learning_compute_cluster.cpu_small[0].scale_settings[0].min_node_count : ""
+  description = "AML compute cluster minimum node count (empty if disabled)"
+}
+
+output "aml_compute_cluster_max_nodes" {
+  value       = var.enable_aml_compute_cluster ? azurerm_machine_learning_compute_cluster.cpu_small[0].scale_settings[0].max_node_count : ""
+  description = "AML compute cluster maximum node count (empty if disabled)"
+}
+
+output "aml_compute_cluster_idle_time" {
+  value       = var.enable_aml_compute_cluster ? azurerm_machine_learning_compute_cluster.cpu_small[0].scale_settings[0].scale_down_nodes_after_idle_duration : ""
+  description = "AML compute cluster idle time before scale down (empty if disabled)"
 }
 
 output "aml_compute_cluster_details" {
