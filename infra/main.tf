@@ -7,8 +7,8 @@ locals {
   aml_workspace_name  = "${local.name_prefix}-ws"
 
   # Log Analytics + AppInsights names
-  log_analytics_name  = "${local.name_prefix}-law"
-  app_insights_name   = "${local.name_prefix}-ai"
+  log_analytics_name = "${local.name_prefix}-law"
+  app_insights_name  = "${local.name_prefix}-ai"
 
   # Key Vault name rules: 3-24 chars, alphanumeric + hyphen, must start with letter.
   # We'll use a compact prefix + random suffix to keep under length.
@@ -166,9 +166,9 @@ resource "azurerm_machine_learning_workspace" "aml" {
 # Keep it off by default (enable_aml_compute_cluster=false).
 
 resource "azurerm_machine_learning_compute_cluster" "cpu_small" {
-  count                        = var.enable_aml_compute_cluster ? 1 : 0
-  name                         = "${local.name_prefix}-cpu-small"
-  location                     = azurerm_resource_group.rg.location
+  count                         = var.enable_aml_compute_cluster ? 1 : 0
+  name                          = "${local.name_prefix}-cpu-small"
+  location                      = azurerm_resource_group.rg.location
   machine_learning_workspace_id = azurerm_machine_learning_workspace.aml.id
 
   vm_size     = var.aml_compute_vm_size
@@ -223,16 +223,16 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "synapse_fs" {
 
 # Synapse Workspace
 resource "azurerm_synapse_workspace" "synapse" {
-  count                = var.enable_synapse_workspace ? 1 : 0
-  name                 = "${local.name_prefix}-synapse"
-  resource_group_name  = azurerm_resource_group.rg.name
-  location             = azurerm_resource_group.rg.location
+  count               = var.enable_synapse_workspace ? 1 : 0
+  name                = "${local.name_prefix}-synapse"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
 
   # Storage account for Synapse workspace data (Data Lake Gen2)
   storage_data_lake_gen2_filesystem_id = azurerm_storage_data_lake_gen2_filesystem.synapse_fs[0].id
 
   # SQL admin credentials
-  sql_administrator_login         = var.synapse_sql_admin_login
+  sql_administrator_login          = var.synapse_sql_admin_login
   sql_administrator_login_password = var.synapse_sql_admin_password
 
   # Managed identity for Synapse
